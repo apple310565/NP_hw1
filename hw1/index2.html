@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+		<head>
+				<title>1A2B</title>
+				<meta charset="utf-8">
+				<meta name="viewport" content="width=device-width,initial-scale=1">
+				<!--Bootstrap CDN-->
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+				<script type="text/javascript" src="/jquery/jquery.js"></script>
+				<!--jQuery CDN-->
+				<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+				<script>
+					var name;
+					var ans=new Array(4);
+					var t=0;
+					var times=document.getElementById("times");
+					var awd =new Array(3);
+					var Name =new Array(3);
+					function load(){
+						for(var i=0;i<3;i++){
+							awd[i]=0;
+							Name[i]="";
+						}
+					}
+					function set(){
+						var times=document.getElementById("times");
+						var lab1=document.getElementById("label");
+						label.innerHTML="";
+						var f=1;
+						t=0;
+						times.innerHTML=t+"次";//ans[0]+""+ans[1]+""+ans[2]+""+ans[3];
+						list();
+						while(f==1)
+						{
+							ans[0]=Math.floor(Math.random()*10);
+							do{
+								ans[1]=Math.floor(Math.random()*10);
+							}while(ans[1]==ans[0]);
+							do{
+								ans[2]=Math.floor(Math.random()*10);
+							}while(ans[2]==ans[0]||ans[2]==ans[1]);
+							do{
+								ans[3]=Math.floor(Math.random()*10);
+							}while(ans[3]==ans[0]||ans[3]==ans[1]||ans[3]==[2]);
+							f=0;
+							for(var i = 0;i<4;i++)
+							{
+								for(var j=0;j<i;j++)
+								{
+									if(ans[i]==ans[j])f=1;
+								}
+							}
+							//if(f==1)alert(ans[0]+""+ans[1]+""+ans[2]+""+ans[3]+">>> not!!!!");
+						}
+						
+					}
+					function save(){
+						var times=document.getElementById("times");
+						var content1=document.getElementById("t");
+						var lab1=document.getElementById("label");
+						var a = new Array(4);
+						a[0]=Math.floor(content1.value/1000);
+						a[1]=Math.floor((content1.value%1000)/100);
+						a[2]=Math.floor((content1.value%100)/10);
+						a[3]=Math.floor(content1.value%10);
+						
+						var f=0;
+						for(var i = 0;i<4;i++)
+						{
+							for(var j=0;j<i;j++)
+							{
+								if(a[i]==a[j])f=1;
+							}
+						}
+						if(f==1||content1.value>9999){alert("請輸入一段0~9不重複的四位數!!!!");content1.value="";}
+						else{
+								
+								var A,B;
+								A=0;B=0;
+								for (var i = 0 ; i < 4 ; i++){
+									for (var j = 0 ; j < 4; j++){
+										if(ans[i]==a[j]){
+											if(i==j)A++;
+											else B++
+										}
+									}
+								}
+								lab1.innerHTML=(a[0]+""+a[1]+""+a[2]+""+a[3]+"   "+A+"A"+B+"B"+"</br>")+lab1.innerHTML;
+								
+								t++;
+								times.innerHTML=t+"次";
+								content1.value="";
+								
+								if(A==4){
+									times.innerHTML=t+"次";
+									win();
+								}
+							}
+						}
+					function win(){
+						if(t<awd[0]||awd[0]==0){
+							name=prompt("恭喜你成為了新的第一名~~\n請輸入玩家名稱","");
+							awd[2]=awd[1];
+							Name[2]=Name[1];
+							awd[1]=awd[0]
+							Name[1]=Name[0];
+							awd[0]=t;
+							Name[0]=name;
+						}
+						else if(t<awd[1]||awd[1]==0){
+							name=prompt("恭喜你成為了新的第二名~~\n請輸入玩家名稱","");
+							awd[2]=awd[1]
+							Name[2]=Name[1];
+							awd[1]=t;
+							Name[1]=name;
+						}
+						else if(t<awd[2]||awd[2]==0){
+							name=prompt("恭喜你成為了新的第三名~~\n請輸入玩家名稱","");
+							awd[2]=t;
+							Name[2]=name;
+						}
+						list();
+						var r = confirm("You win! Answer is "+ans[0]+""+ans[1]+""+ans[2]+""+ans[3]+"\n是否要再玩一次(>_<)");
+						if(r==true)set();
+					}
+					function list(){
+						var a1=document.getElementById("first");
+						var a2=document.getElementById("second");
+						var a3=document.getElementById("third");
+						if(awd[0]>0){
+							a1.innerHTML="<b>第一名:</b></br>"+Name[0]+"</br>"+awd[0]+"次";
+						}
+						else a1.innerHTML="";
+						
+						if(awd[1]>0){
+							a2.innerHTML="<b>第二名:</b></br>"+Name[1]+"</br>"+awd[1]+"次";
+						}
+						else a2.innerHTML="";
+						
+						if(awd[2]>0){
+							a3.innerHTML="<b>第三名:</b></br>"+Name[2]+"</br>"+awd[2]+"次";
+						}
+						else a3.innerHTML="";
+					}
+				</script>
+				<style>
+
+				</style>
+		</head>
+		<body >
+			<header  style="background:#000000;padding:5px">
+				<h1 style="color:#ffffff"><i>1A2B</i></h1>
+			</header>
+			<div class="row" style="background:lightyellow;padding:10px 5px;margin:0px 0px">
+				<div class="col-md-2"  >
+					<div class="row">
+						<b><p style="color:red">紀錄排行</p></b>
+						<div id="first" class="col-md-12 col-xs-4">第一名: 241234 3次</div>
+						<div id="second" class="col-md-12 col-xs-4">第二名: randow 6次</div>
+						<div id="third" class="col-md-12 col-xs-4">第三名: 124 9次</div>
+					</div>
+					<div class="row">
+						<b><p style="color:red">目前次數</p></b>
+						<p id="times" class="col-md-12"> 0</p>
+					</div>
+				</div>
+				<div class="col-md-10">
+					<form>
+						<div class="container">
+						<div >
+								<input type="text" placeholder="請輸入一段0~9不重複的四位數" name="t" id="t" class="col-md-4 col-xs-8"> 
+								<input type="button" class="btn btn-default  btn-sm col-md-offset-1 col-md-2 col-xs-offset-1 col-xs-3" onclick="javascript:save();" value="submit" >
+								</br></br>
+								<p id="label"  style="font-size:30px"></p>
+								<input type="button" class="btn btn-default col-md-7 col-xs-12" onclick="javascript:set();" value="Play again">
+								<input type="image" src="img2.png">
+						</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<footer style="background:#000000;padding:5px 10px"><p class="text-right" style="color:#ffffff">為甚麼作業這麼難QQ</p></footer>
+			<script>load();set();</script>
+		</body>
+</html>
+
+
