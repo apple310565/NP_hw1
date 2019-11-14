@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
@@ -46,7 +47,7 @@ void handle_socket(int fd)
 	char *str=(char*)malloc(sizeof(char)*(BUFFERSIZE+1));
 
 	ret=read(fd,buffer,BUFFERSIZE); //讀取瀏覽器需求
-	printf("buffer : %s\n",buffer);
+	//printf("buffer : %s\n",buffer);
 	if(ret==0 || ret==-1)//連線有問題，結束
 	{
 		perror("read");
@@ -70,13 +71,11 @@ void handle_socket(int fd)
 void POST(int fd,char buffer[],char str[])
 {
 	int i=0,len,buflen;
-	printf("Enter POST function\n------------------------\n\n\n");
+	//printf("Enter POST function\n------------------------\n\n\n");
 	char filename[100],content[59999];
 	char *ptr,*fstr;
 	FILE *fp;
 
-	sprintf(buffer,"Continue");
-	write(fd,buffer,BUFFERSIZE);
 	//sprintf(buffer,"Continue");
 	//write(fd,buffer,BUFFERSIZE);
 	ptr=strstr(str,"filename=");
@@ -96,27 +95,6 @@ void POST(int fd,char buffer[],char str[])
 	ptr=strstr(ptr,"Content-Type: ");
 	ptr+=14;
 	
-	//檢查客戶端所要求的檔案格式
-	/*buflen = strlen(buffer);
-	fstr = (char *)0;
-
-	for(i=0;extensions[i].ext!=0;i++)
-	{
-		len=strlen(extensions[i].ext);
-		if(!strncmp(ptr, extensions[i].filetype, strlen(extensions[i].filetype)))
-		{
-			fstr=extensions[i].ext;
-			ptr+=strlen(extensions[i].filetype);
-			break;
-		}
-	}
-	//檔案格式不支援
-	if(fstr==0)
-		fstr=extensions[i-1].ext;
-	char *qtr;
-	qtr=ptr;
-	while(*qtr!='-'||*(qtr+1)!='-')qtr++;
-	*qtr='\0';*/
 	while(*ptr!='\n')ptr++;
 	ptr++;
 	ptr++;
@@ -130,9 +108,18 @@ void POST(int fd,char buffer[],char str[])
 	strcpy(content,&content[1]);
 	fprintf(fp,"%s",content);
 	fclose(fp);
+	chmod(filename,0777);
+	buffer[0]='G';
+	buffer[1]='E';
+	buffer[2]='T';
+	buffer[3]=' ';
+	strcpy(&buffer[4],&buffer[5]);
+	printf("Upload successful!\n");
+	//printf("buffer=%s\n",buffer);
+	GET(fd,buffer);
 }
 void GET(int fd,char buffer[]){
-	printf("Enter GET fuction\n---------------------\n\n\n");
+	//printf("Enter GET fuction\n---------------------\n\n\n");
 	//判斷GET命令
 	int j, file_fd, buflen, len;
 	long i, ret;
